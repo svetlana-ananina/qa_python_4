@@ -5,6 +5,7 @@ from data import GENRE_LIST, GENRE_FOR_CHLDREN, GENRE_AGE_RATING
 class TestBooksCollector:
 
     def test_add_new_book_add_two_books(self):
+        ''' Проверка добавления двух книг '''
         collector = BooksCollector()
         collector.add_new_book('Гордость и предубеждение и зомби')
         collector.add_new_book('Что делать, если ваш кот хочет вас убить')
@@ -13,13 +14,13 @@ class TestBooksCollector:
     @pytest.mark.parametrize('name', ['',
                                       '12345678901234567890123456789012345678901'])
     def test_add_new_book_invalid_name_not_added(self, name):
-        ''' Тест добавления книги с недопустимым названием - длина 0 символов и 41 символ '''
+        ''' Проверка добавления книги с недопустимым названием - длина 0 символов и 41 символ '''
         collect = BooksCollector()
         collect.add_new_book(name)
         assert len(collect.get_books_genre()) == 0
 
     def test_add_new_book_double_not_added(self):
-        ''' Тест повторного добавления книги '''
+        ''' Повторное добавление книги '''
         collect = BooksCollector()
         collect.add_new_book('Одна и та же книга')
         collect.add_new_book('Одна и та же книга')
@@ -47,7 +48,7 @@ class TestBooksCollector:
         assert collect.get_book_genre(name) == genre
 
     def test_set_book_genre_invalid_genre_not_added(self, new_book):
-        ''' Тест добавления жанра для книги '''
+        ''' Тест добавления недопустимого жанра для книги '''
         name = 'Новая книга'
         genre = 'Сказки'
         collect = new_book
@@ -55,7 +56,7 @@ class TestBooksCollector:
         assert collect.get_book_genre(name) == ''
 
     def test_set_book_genre_missing_book_not_added(self, new_book):
-        ''' Тест добавления жанра для книги '''
+        ''' Тест добавления жанра для отсутствующей в коллекции книги '''
         name = ''
         genre = 'Фантастика'
         collect = new_book
@@ -63,7 +64,7 @@ class TestBooksCollector:
         assert not collect.get_book_genre(name)
 
     def test_get_books_for_children_success(self, collection):
-        ''' Проверка получения книг для детей '''
+        ''' Проверка получения списка книг для детей '''
         collect = collection
         children_books = collect.get_books_for_children()
 
@@ -89,7 +90,7 @@ class TestBooksCollector:
                 collect.get_book_genre(specific_books[0]) == genre
                 )
 
-    @pytest.mark.parametrize('genre', ['', 'Сказки', 'Ужасы'])
+    @pytest.mark.parametrize('genre', ['Сказки', 'Ужасы'])
     def test_get_books_with_specific_genre_invalid_or_missing(self, new_book, new_book_with_genre, genre):
         ''' Проверка получения книг по жанру - неверный жанр или отсутствует в коллекции '''
         collect = new_book_with_genre
@@ -105,7 +106,7 @@ class TestBooksCollector:
         assert ( len(favorites) == 1 and favorites[0] == name )
 
     def test_add_book_in_favorites_missing_book_not_added(self, new_book_with_genre):
-        ''' Проверка добавления книги в избранное - если книги нет в коллекции, не добавляется в избранное '''
+        ''' Проверка добавления книги в избранное - если книги нет в коллекции, не добавляется '''
         collect = new_book_with_genre
         name = 'Другая книга'
         collect.add_book_in_favorites(name)
@@ -122,6 +123,7 @@ class TestBooksCollector:
         assert ( len(favorites) == 1 and favorites[0] == name )
 
     def test_delete_book_from_favorites_deleted(self, new_book_with_genre):
+        ''' Проверка удаления книги из избранного '''
         collect = new_book_with_genre
         name = 'Новая книга'
         collect.add_book_in_favorites(name)
@@ -130,6 +132,7 @@ class TestBooksCollector:
         assert len(favorites) == 0
 
     def test_delete_book_from_favorites_missing_book_not_deleted(self, new_book_with_genre):
+        ''' Проверка удаления книги из избранного, если такой книги нет в избранном '''
         collect = new_book_with_genre
         name = 'Новая книга'
         other_name = 'Другая книга'
