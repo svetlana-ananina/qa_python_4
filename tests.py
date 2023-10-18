@@ -69,8 +69,10 @@ class TestBooksCollector:
         children_books = collect.get_books_for_children()
 
         assert len(children_books) == 3
-        for name in children_books:
-            assert collect.get_book_genre(name) in GENRE_FOR_CHLDREN
+        name1, name2, name3 = children_books[0], children_books[1], children_books[2]
+        assert collect.get_book_genre(name1) in GENRE_FOR_CHLDREN
+        assert collect.get_book_genre(name2) in GENRE_FOR_CHLDREN
+        assert collect.get_book_genre(name3) in GENRE_FOR_CHLDREN
 
     def test_get_books_for_children_has_not_age_rating(self, collection):
         ''' Проверка. что в списке книг для детей отсутствуют книги с возрастным рейтингом '''
@@ -78,8 +80,11 @@ class TestBooksCollector:
         children_books = collect.get_books_for_children()
 
         assert len(children_books) == 3
-        for name in children_books:
-            assert collect.get_book_genre(name) not in GENRE_AGE_RATING
+        name1, name2, name3 = children_books[0], children_books[1], children_books[2]
+        assert collect.get_book_genre(name1) not in GENRE_AGE_RATING
+        assert collect.get_book_genre(name2) not in GENRE_AGE_RATING
+        assert collect.get_book_genre(name3) not in GENRE_AGE_RATING
+
 
     @pytest.mark.parametrize('genre', GENRE_LIST)
     def test_get_books_with_specific_genre_success(self, collection, genre):
