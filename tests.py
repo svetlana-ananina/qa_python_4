@@ -1,40 +1,6 @@
 from main import BooksCollector
 import pytest
-
-
-BOOKS_COLLECTION = ['Книга 1', 'Книга 2', 'Книга 3', 'Книга 4', 'Книга 5']
-GENRE_LIST = ['Фантастика', 'Ужасы', 'Детективы', 'Мультфильмы', 'Комедии']
-GENRE_AGE_RATING = ['Ужасы', 'Детективы']
-GENRE_FOR_CHLDREN = ['Фантастика', 'Мультфильмы', 'Комедии']
-
-
-@pytest.fixture
-def new_book(name='Новая книга'):
-    ''' Функция создания коллекции и добавления 1 книги '''
-    collect = BooksCollector()
-    collect.add_new_book(name)
-    return collect
-
-@pytest.fixture
-def new_book_with_genre(new_book):
-    ''' Функция создания коллекции и добавления 1 книги с жанром '''
-    name = 'Новая книга'
-    genre = 'Фантастика'
-    collect = new_book
-    collect.set_book_genre(name, genre)
-    return collect
-
-@pytest.fixture
-def collection():
-    ''' Функция создания коллекции из 5-ти книг 5-ти разных жанров '''
-    collection = BooksCollector()
-    for i in range(len(BOOKS_COLLECTION)):
-        name = BOOKS_COLLECTION[i]
-        genre = GENRE_LIST[i]
-        collection.add_new_book(name)
-        collection.set_book_genre(name, genre)
-    return collection
-
+from data import GENRE_LIST, GENRE_FOR_CHLDREN, GENRE_AGE_RATING
 
 # класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
 # обязательно указывать префикс Test
@@ -86,7 +52,7 @@ class TestBooksCollector:
         collect = new_book_with_genre
         assert collect.get_book_genre(name) == genre
 
-    def test_get_books_for_children(self, collection):
+    def test_get_books_for_children_success(self, collection):
         ''' Проверка получения книг для детей '''
         collect = collection
         children_books = collect.get_books_for_children()
@@ -95,7 +61,16 @@ class TestBooksCollector:
         for name in children_books:
             assert collect.get_book_genre(name) in GENRE_FOR_CHLDREN
 
-#    @pytest.mark.parametrize('genre', ['Фантастика', 'Ужасы', 'Детективы', 'Мультфильмы', 'Комедии'])
+    def test_get_books_for_children_has_not_age_rating(self, collection):
+        ''' Проверка. что в списке книг для детей отсутствуют книги с возрастным рейтингом '''
+        collect = collection
+        children_books = collect.get_books_for_children()
+
+        assert len(children_books) == 3
+        for name in children_books:
+            assert collect.get_book_genre(name) not in GENRE_AGE_RATING
+
+    #@pytest.mark.parametrize('genre', ['Фантастика', 'Ужасы', 'Детективы', 'Мультфильмы', 'Комедии'])
     @pytest.mark.parametrize('genre', GENRE_LIST)
     def test_get_books_with_specific_genre_success(self, collection, genre):
         ''' Проверка получения книг по жанру '''
@@ -112,3 +87,36 @@ class TestBooksCollector:
         specific_books = collect.get_books_with_specific_genre(genre)
         assert len(specific_books) == 0
 
+    def test_add_book_in_favorites_added_1_book(self, new_book_with_genre):
+        ''' Проверка добавления книги в избранное '''
+        collect = new_book_with_genre
+        name = 'Новая книга'
+        collect.add_book_in_favorites(name)
+        favorites = collect.get_list_of_favorites_books()
+        assert ( len(favorites) == 1 and favorites[0] == name )
+
+    def test_add_book_in_favorites_double_not_added(self, new_book_with_genre):
+        ''' Проверка, что дубль не добавляется в избранное '''
+        collect = new_book_with_genre
+        name = 'Новая книга'
+        collect.add_book_in_favorites(name)
+        collect.add_book_in_favorites(name)
+        favorites = collect.get_list_of_favorites_books()
+        assert ( len(favorites) == 1 and favorites[0] == name )
+
+    def test_delete_book_from_favorites_deleted(self, new_book_with_genre):
+        collect = new_book_with_genre
+        name = 'Новая книга'
+        collect.add_book_in_favorites(name)
+        collect.delete_book_from_favorites(name)
+        favorites = collect.get_list_of_favorites_books()
+        assert len(favorites) == 0
+
+    def test_delete_book_from_favorites_not_deleted(self, new_book_with_genre):
+        collect = new_book_with_genre
+        name = 'Новая книга'
+        other_name = 'Другая книга'
+        collect.add_book_in_favorites(name)
+        collect.delete_book_from_favorites(other_name)
+        favorites = collect.get_list_of_favorites_books()
+        assert ( len(favorites) == 1 and favorites[0] == name )
