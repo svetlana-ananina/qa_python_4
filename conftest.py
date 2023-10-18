@@ -23,10 +23,20 @@ def new_book_with_genre(new_book):
 def collection():
     ''' Функция создания коллекции из 5-ти книг 5-ти разных жанров '''
     collection = BooksCollector()
-    for i in range(len(BOOKS_COLLECTION)):
-        name = BOOKS_COLLECTION[i]
-        genre = GENRE_LIST[i]
-        collection.add_new_book(name)
-        collection.set_book_genre(name, genre)
+    name, genre = BOOKS_COLLECTION[0], GENRE_LIST[0]
+    collection.add_new_book(name)
+    collection.set_book_genre(name, genre)
+    name, genre = BOOKS_COLLECTION[1], GENRE_LIST[1]
+    collection.add_new_book(name)
+    collection.set_book_genre(name, genre)
+    name, genre = BOOKS_COLLECTION[2], GENRE_LIST[2]
+    collection.add_new_book(name)
+    collection.set_book_genre(name, genre)
+    name, genre = BOOKS_COLLECTION[3], GENRE_LIST[3]
+    collection.add_new_book(name)
+    collection.set_book_genre(name, genre)
+    name, genre = BOOKS_COLLECTION[4], GENRE_LIST[4]
+    collection.add_new_book(name)
+    collection.set_book_genre(name, genre)
     return collection
 
