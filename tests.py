@@ -58,7 +58,7 @@ class TestBooksCollector:
 
     def test_set_book_genre_missing_book_not_added(self, new_book):
         ''' Проверка добавления жанра для отсутствующей в коллекции книги '''
-        name = ''
+        name = 'Другая книга'
         genre = 'Фантастика'
         collect = new_book
         collect.set_book_genre(name, genre)
