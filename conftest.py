@@ -35,3 +35,12 @@ def collection():
     collection.set_book_genre(BOOKS_COLLECTION[4], GENRE_LIST[4])
     return collection
 
+@pytest.fixture
+def collection_two_books_with_genre():
+    ''' Функция создания коллекции из 2-х книг разных жанров '''
+    collect = BooksCollector()
+    collect.add_new_book('Книга 1 фантастика')
+    collect.add_new_book('Книга 2 ужасы')
+    collect.set_book_genre('Книга 1 фантастика', 'Фантастика')
+    collect.set_book_genre('Книга 2 ужасы', 'Ужасы')
+    return collect
