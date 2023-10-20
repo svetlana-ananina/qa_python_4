@@ -2,6 +2,7 @@ from main import BooksCollector
 import pytest
 from data import GENRE_LIST, GENRE_FOR_CHLDREN, GENRE_AGE_RATING
 
+
 class TestBooksCollector:
 
     def test_add_new_book_add_two_books(self):
@@ -20,7 +21,7 @@ class TestBooksCollector:
         assert len(collect.get_books_genre()) == 0
 
     def test_add_new_book_double_not_added(self):
-        ''' Повторное добавление книги '''
+        ''' Проверка повторного добавление книги '''
         collect = BooksCollector()
         collect.add_new_book('Одна и та же книга')
         collect.add_new_book('Одна и та же книга')
@@ -32,7 +33,7 @@ class TestBooksCollector:
         assert collect.get_book_genre('Новая книга') == ''
 
     def test_set_book_genre_added(self, new_book, new_book_with_genre):
-        ''' Тест добавления жанра для книги '''
+        ''' Проверка добавления жанра для книги '''
         name = 'Новая книга'
         genre = 'Фантастика'
         collect = new_book_with_genre
@@ -40,7 +41,7 @@ class TestBooksCollector:
 
 
     def test_set_book_genre_changed(self, new_book, new_book_with_genre):
-        ''' Тест изменения жанра для книги '''
+        ''' Проверка изменения жанра для книги '''
         name = 'Новая книга'
         genre = 'Ужасы'
         collect = new_book_with_genre
@@ -48,7 +49,7 @@ class TestBooksCollector:
         assert collect.get_book_genre(name) == genre
 
     def test_set_book_genre_invalid_genre_not_added(self, new_book):
-        ''' Тест добавления недопустимого жанра для книги '''
+        ''' Проверка добавления недопустимого жанра для книги '''
         name = 'Новая книга'
         genre = 'Сказки'
         collect = new_book
@@ -56,8 +57,8 @@ class TestBooksCollector:
         assert collect.get_book_genre(name) == ''
 
     def test_set_book_genre_missing_book_not_added(self, new_book):
-        ''' Тест добавления жанра для отсутствующей в коллекции книги '''
-        name = ''
+        ''' Проверка добавления жанра для отсутствующей в коллекции книги '''
+        name = 'Другая книга'
         genre = 'Фантастика'
         collect = new_book
         collect.set_book_genre(name, genre)
@@ -67,24 +68,16 @@ class TestBooksCollector:
         ''' Проверка получения списка книг для детей '''
         collect = collection
         children_books = collect.get_books_for_children()
+        assert (len(children_books) == 3)
 
-        assert len(children_books) == 3
-        name1, name2, name3 = children_books[0], children_books[1], children_books[2]
-        assert collect.get_book_genre(name1) in GENRE_FOR_CHLDREN
-        assert collect.get_book_genre(name2) in GENRE_FOR_CHLDREN
-        assert collect.get_book_genre(name3) in GENRE_FOR_CHLDREN
-
-    def test_get_books_for_children_has_not_age_rating(self, collection):
+    def test_get_books_for_children_has_not_age_rating(self, collection_two_books_with_genre):
         ''' Проверка. что в списке книг для детей отсутствуют книги с возрастным рейтингом '''
-        collect = collection
+        collect = collection_two_books_with_genre
         children_books = collect.get_books_for_children()
-
-        assert len(children_books) == 3
-        name1, name2, name3 = children_books[0], children_books[1], children_books[2]
-        assert collect.get_book_genre(name1) not in GENRE_AGE_RATING
-        assert collect.get_book_genre(name2) not in GENRE_AGE_RATING
-        assert collect.get_book_genre(name3) not in GENRE_AGE_RATING
-
+        assert (len(children_books) == 1 and
+                collect.get_book_genre(children_books[0]) in GENRE_FOR_CHLDREN and
+                collect.get_book_genre(children_books[0]) not in GENRE_AGE_RATING
+                 )
 
     @pytest.mark.parametrize('genre', GENRE_LIST)
     def test_get_books_with_specific_genre_success(self, collection, genre):
